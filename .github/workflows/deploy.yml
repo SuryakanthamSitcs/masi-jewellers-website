@@ -18,18 +18,28 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: 22
         script: |
-          echo "🚀 Starting deployment..."
+          echo "Starting deployment..."
           cd /var/www/elite-website
+          pwd
           
-          # Pull latest changes
           git pull origin main
           
-          # Restart services using improved script
-          ./restart_services.sh
+          # Kill existing processes
+          sudo pkill -f "elite-backend" || true
+          sudo pkill -f "next dev" || true
+          sleep 5
           
-          # Final verification
+          # Start backend
+          cd /var/www/elite-website/backend
+          nohup cargo run > backend.log 2>&1 &
+          
+          # Start frontend
+          cd /var/www/elite-website/frontend
+          nohup npm run dev -- --port 3000 > frontend.log 2>&1 &
+          
+          # Wait and test
+          sleep 15
+          curl -f http://localhost:3001/api/health
           curl -f https://masijwellers.devforge.in/api/health
-          curl -f https://masijwellers.devforge.in/api/products
-          curl -f https://masijwellers.devforge.in/api/rates
           
-          echo "✅ Deployment completed successfully!"
+          echo "Deployment completed!"

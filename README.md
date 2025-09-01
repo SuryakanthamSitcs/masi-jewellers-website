@@ -1,11 +1,9 @@
-# 🚀 Elite Website
-**Ultra-fast Rust backend + Next.js frontend**
+## Masi Jewellers - Production Website
 
-## Architecture
-- **Frontend**: Next.js 14 + TypeScript + Tailwind
-- **Backend**: Rust + Axum + PostgreSQL
-- **Hosting**: Hostinger VPS + Cloudflare CDN
-- **Deployment**: GitHub Actions + Docker
+Production-ready jewelry business website with:
+- Real-time gold/silver rates
+- Product catalog with hallmarks  
+- PostgreSQL database integration
+- Automated CI/CD deployment
 
-## Status
-🔧 Currently setting up the foundation...
+**Live Site**: https://masijwellers.devforge.in

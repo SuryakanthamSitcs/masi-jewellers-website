@@ -1,0 +1,24 @@
+
+// Customer management struct
+#[derive(Serialize, sqlx::FromRow)]
+struct Customer {
+    id: i32,
+    name: String,
+    phone: String,
+    email: Option<String>,
+    customer_type: Option<String>,
+    kyc_verified: Option<bool>,
+}
+
+// Customer handler
+async fn get_customers(State(state): State<Arc<AppState>>) -> Result<Json<Vec<Customer>>, StatusCode> {
+    let customers = sqlx::query_as::<_, Customer>(
+        "SELECT id, name, phone, email, customer_type, kyc_verified FROM customers ORDER BY created_at DESC LIMIT 10"
+    )
+    .fetch_all(&state.db)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    
+    info!("Customers requested - found {} customers", customers.len());
+    Ok(Json(customers))
+}

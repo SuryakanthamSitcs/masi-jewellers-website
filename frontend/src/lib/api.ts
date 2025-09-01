@@ -41,3 +41,13 @@ export const getMetalRates = async () => {
     throw error;
   }
 };
+
+export const getCustomers = async () => {
+  try {
+    const response = await api.get('/api/customers');
+    return response.data;
+  } catch (error) {
+    console.error('Get customers failed:', error);
+    throw error;
+  }
+};

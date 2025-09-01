@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { getCustomers } from '@/lib/api';
 
 interface Customer {
   id: number;
@@ -14,44 +15,36 @@ interface Customer {
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Sample data matching our database
-    const sampleCustomers = [
-      {
-        id: 1,
-        name: "Rajesh Kumar",
-        phone: "+91-9876543210",
-        email: "rajesh.kumar@email.com",
-        customer_type: "premium",
-        kyc_verified: true
-      },
-      {
-        id: 2,
-        name: "Priya Sharma", 
-        phone: "+91-9876543211",
-        email: "priya.sharma@email.com",
-        customer_type: "regular",
-        kyc_verified: true
-      },
-      {
-        id: 3,
-        name: "Suresh Reddy",
-        phone: "+91-9876543212", 
-        email: "suresh.reddy@email.com",
-        customer_type: "regular",
-        kyc_verified: false
+    const fetchCustomers = async () => {
+      try {
+        const data = await getCustomers();
+        setCustomers(data);
+      } catch (err) {
+        setError('Failed to load customers');
+        console.error('Error fetching customers:', err);
+      } finally {
+        setLoading(false);
       }
-    ];
-    
-    setCustomers(sampleCustomers);
-    setLoading(false);
+    };
+
+    fetchCustomers();
   }, []);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-600 to-orange-700 flex items-center justify-center">
         <div className="text-white text-2xl">Loading Customers...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-600 to-orange-700 flex items-center justify-center">
+        <div className="text-white text-xl">Error: {error}</div>
       </div>
     );
   }
@@ -83,6 +76,7 @@ export default function CustomersPage() {
             <table className="w-full text-white">
               <thead>
                 <tr className="border-b border-white/20">
+                  <th className="text-left py-3 px-4">ID</th>
                   <th className="text-left py-3 px-4">Name</th>
                   <th className="text-left py-3 px-4">Phone</th>
                   <th className="text-left py-3 px-4">Email</th>
@@ -94,16 +88,17 @@ export default function CustomersPage() {
               <tbody>
                 {customers.map((customer) => (
                   <tr key={customer.id} className="border-b border-white/10 hover:bg-white/5 transition-colors">
+                    <td className="py-3 px-4 text-yellow-300 font-mono">#{customer.id}</td>
                     <td className="py-3 px-4 font-semibold">{customer.name}</td>
                     <td className="py-3 px-4">{customer.phone}</td>
-                    <td className="py-3 px-4 text-sm">{customer.email}</td>
+                    <td className="py-3 px-4 text-sm">{customer.email || 'N/A'}</td>
                     <td className="py-3 px-4">
                       <span className={`px-2 py-1 rounded text-xs font-medium ${
                         customer.customer_type === 'premium' 
                           ? 'bg-yellow-500 text-black' 
                           : 'bg-blue-500 text-white'
                       }`}>
-                        {customer.customer_type}
+                        {customer.customer_type || 'regular'}
                       </span>
                     </td>
                     <td className="py-3 px-4">
@@ -123,7 +118,7 @@ export default function CustomersPage() {
                         Edit
                       </button>
                       <button className="text-green-300 hover:text-green-100 text-sm">
-                        Purchase History
+                        History
                       </button>
                     </td>
                   </tr>

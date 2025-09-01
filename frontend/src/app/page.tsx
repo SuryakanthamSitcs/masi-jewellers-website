@@ -137,6 +137,19 @@ export default function Home() {
         <div className="max-w-4xl mx-auto mt-12">
           <h3 className="text-3xl font-bold text-white text-center mb-8">
             Our Services
+        {/* Management Section */}
+        <div className="max-w-4xl mx-auto mt-12">
+          <h3 className="text-3xl font-bold text-white text-center mb-8">
+            Business Management
+          </h3>
+          <div className="text-center">
+            <a href="/customers" className="bg-white/20 hover:bg-white/30 rounded-lg p-6 inline-block transition-all duration-300 border border-white/20">
+              <div className="text-4xl mb-4">👥</div>
+              <div className="text-white font-semibold text-lg">Customer Management</div>
+              <div className="text-yellow-200 text-sm">Manage customer database and KYC records</div>
+            </a>
+          </div>
+        </div>
           </h3>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-amber-500/20 rounded-lg p-6">
